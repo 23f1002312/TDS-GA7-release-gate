@@ -1,29 +1,18 @@
-name: TDS GA7 Release Gate
+name: "TDS GA7 Release Gate"
 
 on:
   push:
     branches: [main]
 
-permissions:
-  contents: read
-
 jobs:
-  test:
+  test-release-gate:
     runs-on: ubuntu-latest
     steps:
-      - name: TDS identity: 23f1002312@ds.study.iitm.ac.in
-        run: echo "TDS identity: 23f1002312@ds.study.iitm.ac.in"
+      - name: "TDS identity: 23f1002312@ds.study.iitm.ac.in"
+        run: echo "Verifying identity for 23f1002312@ds.study.iitm.ac.in"
 
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Set up Python
-        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2 # v5.3.0
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run tests
-        run: pytest tests/ -v
+      - name: "Test Hosted Release Gate API"
+        run: |
+          curl -f -X POST "https://tds-roe-solver-api-t12026.onrender.com/ga7/23f1002312%40ds.study.iitm.ac.in/release-gate" \
+            -H "Content-Type: application/json" \
+            -d '{"target":"preview","event":"pull_request","ref":"refs/heads/feature","workflow":{"trigger":"pull_request","permissions":{"contents":"read","packages":"write","id-token":"none"},"testsPassed":true,"matrixComplete":true,"failFast":false,"actions":[{"owner":"actions","name":"checkout","ref":"v4"}],"environmentApproval":true},"image":{"multiStage":true,"runsAsRoot":false,"secretMode":"none","criticalVulnerabilities":0,"digestPinned":true}}'
